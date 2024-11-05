@@ -1,0 +1,36 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: hellofini_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: IOPKL;10nm!0  # Пароль root пользователя (поменяйте на сильный пароль)
+      MYSQL_DATABASE: hellofini          # Имя базы данных
+      MYSQL_USER: hellofini_user         # Имя пользователя БД
+      MYSQL_PASSWORD: ERDF34cv!0 # Пароль пользователя БД
+    ports:
+      - '3310:3306'                      # Порт для доступа к MySQL на хосте
+    volumes:
+      - db_data:/var/lib/mysql           # Хранение данных базы данных
+    networks:
+      - hellofini-network
+
+  # Дополнительно: сервис для Laravel
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hellofini_app
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html                  # Связываем локальные файлы с контейнером
+    networks:
+      - hellofini-network
+    depends_on:
+      - mysql
+
+networks:
+  hellofini-network:
+    driver: bridge
+
+volumes:
+  db_data:
